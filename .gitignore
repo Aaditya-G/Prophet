@@ -9,3 +9,5 @@ Cargo.lock
 replay.log
 
 venv/
+__pycache__/
+*.pyc

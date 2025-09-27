@@ -1,4 +1,5 @@
 Flask==2.2.3
+Werkzeug==2.2.2
 python-dotenv==1.0.0
 psycopg2-binary==2.9.5
 SQLAlchemy==2.0.23

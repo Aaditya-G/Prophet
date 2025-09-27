@@ -1,8 +1,15 @@
 import os
+import dotenv
+
+dotenv.load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a hard to guess string'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    SQLALCHEMY_POOL_SIZE = 3
+    SQLALCHEMY_MAX_OVERFLOW = 2
+    SQLALCHEMY_POOL_RECYCLE = 3600
 
     @staticmethod
     def init_app(app):
