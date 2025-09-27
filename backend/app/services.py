@@ -15,8 +15,7 @@ def get_proposal_details(proposal_id: str):
     on_chain_data = ProposalSchema.from_orm(proposal).dict()
     
     discussion_posts = None
-    if proposal.description:
-        discussion_posts = offchain_service.get_filtered_discussion(proposal.description)
+    discussion_posts = offchain_service.get_filtered_discussion(on_chain_data["description"])
 
     return {
         "on_chain_data": on_chain_data,

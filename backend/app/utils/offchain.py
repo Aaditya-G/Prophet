@@ -8,7 +8,7 @@ class OffChainDataService:
         if not api_key:
             raise ValueError("Gemini API key is required.")
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-2.5-pro')
 
     def _extract_url_from_description(self, description: str) -> Optional[str]:
         prompt = f"""
@@ -60,6 +60,7 @@ class OffChainDataService:
         if not json_data:
             return None
 
-        return self._filter_discussion_posts(json_data)
+        filtered_posts = self._filter_discussion_posts(json_data)
+        return filtered_posts
 
 offchain_service = OffChainDataService(api_key=os.getenv('GEMINI_API_KEY'))
