@@ -1,13 +1,14 @@
 from flask import Blueprint, jsonify
-from .services import get_all_proposals, get_proposal_details
+from .services import get_all_proposals, get_proposal_details , get_foundational_data
 
 main = Blueprint('main', __name__)
 
 @main.route('/api/proposals', methods=['GET'])
 def fetch_proposals():
     try:
-        proposals_data = get_all_proposals()
-        return jsonify(proposals_data)
+        # proposals_data = get_all_proposals()
+        print(get_foundational_data())
+        return jsonify({"a":"b"})
     except Exception as e:
         return jsonify({'error': 'An internal server error occurred'}), 500
 

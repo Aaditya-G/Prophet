@@ -8,6 +8,6 @@ uniswap-governance/target/
 Cargo.lock
 replay.log
 
-venv/
+*venv/
 __pycache__/
 *.pyc
