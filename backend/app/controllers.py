@@ -25,7 +25,7 @@ def fetch_proposal(proposal_id):
         return jsonify({'error': 'An internal server error occurred'}), 500
 
 
-@main.route('/api/foundational', methods=['GET'])
+@main.route('/api/dao-metrics', methods=['GET'])
 def fetch_foundational():
     try:
         foundational_data=get_foundational_data()

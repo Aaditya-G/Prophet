@@ -7,3 +7,4 @@ pydantic
 Flask-SQLAlchemy
 requests
 google-generativeai
+web3

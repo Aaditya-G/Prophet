@@ -23,5 +23,5 @@ def get_proposal_details(proposal_id: str):
     }
 
 def get_foundational_data():
-    data = DaoMetricsUtil.get_all_dao_metrics()
-    return data
+    dao_metrics = DaoMetricsUtil.get_all_dao_metrics()
+    return dao_metrics
