@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel ,Field
 from typing import List, Optional
 
 class VoteSchema(BaseModel):
@@ -42,3 +42,16 @@ class ProposalSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class OffChainPostSchema(BaseModel):
+    cooked: Optional[str]
+    reply_count: Optional[int]
+    reads: Optional[int]
+    score: Optional[float]
+    trust_level: Optional[int]
+
+class ProposalDetailSchema(BaseModel):
+    on_chain_data: ProposalSchema
+    off_chain_discussion: List[OffChainPostSchema] = Field(
+        None, description="Discussion from the governance forum"
+    )

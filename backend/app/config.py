@@ -11,6 +11,9 @@ class Config:
     SQLALCHEMY_MAX_OVERFLOW = 2
     SQLALCHEMY_POOL_RECYCLE = 3600
 
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+
+
     @staticmethod
     def init_app(app):
         pass
