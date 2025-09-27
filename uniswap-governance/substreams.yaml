@@ -1,0 +1,54 @@
+specVersion: v0.1.0
+package:
+  name: "uniswap-governance"
+  version: v0.1.0
+
+protobuf:
+  files:
+    # dependencies first
+    - sf/substreams/entity/v1/entity.proto
+
+    # sink protos
+    - sf/substreams/sink/database/v1/database.proto
+    - sf/substreams/sink/sql/services/v1/services.proto
+
+    # self defined protos for data format
+    - uniswap.proto
+  importPaths:
+    - ./proto
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./target/wasm32-unknown-unknown/release/uniswap_governance.wasm
+
+modules:
+  - name: map_proposals
+    kind: map
+    initialBlock: 13059157
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:uniswap.Proposals
+
+  - name: map_votes
+    kind: map
+    initialBlock: 13059157
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:uniswap.Votes
+
+  - name: db_out
+    kind: map
+    inputs:
+      - map: map_proposals
+      - map: map_votes
+    output:
+      type: proto:sf.substreams.sink.database.v1.DatabaseChanges
+
+sink:
+  module: db_out
+  type: sf.substreams.sink.sql.v1.Service
+  config:
+    schema: "./schema.sql"

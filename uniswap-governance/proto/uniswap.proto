@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package uniswap;
+
+message Proposals {
+    repeated Proposal proposals = 1;
+}
+
+message Proposal {
+    string id = 1;                           
+    string proposer = 2;                     
+    string description = 3;                  
+    uint64 creation_time = 4;                
+    repeated string values = 5;
+}
+
+
+message Votes {
+    repeated Vote votes = 1;
+}
+
+message Vote {
+    string id = 1;                           
+    string voter = 2;                        
+    string proposal_id = 3;                  
+    string weight = 4;                       
+    int32 choice = 5;                        
+    string reason = 6;                       
+}
