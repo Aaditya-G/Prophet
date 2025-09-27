@@ -6,9 +6,8 @@ main = Blueprint('main', __name__)
 @main.route('/api/proposals', methods=['GET'])
 def fetch_proposals():
     try:
-        # proposals_data = get_all_proposals()
-        print(get_foundational_data())
-        return jsonify({"a":"b"})
+        proposals_data = get_all_proposals()
+        return jsonify(proposals_data)
     except Exception as e:
         return jsonify({'error': 'An internal server error occurred'}), 500
 
@@ -23,4 +22,13 @@ def fetch_proposal(proposal_id):
     except Exception:
         import traceback
         traceback.print_exc()
+        return jsonify({'error': 'An internal server error occurred'}), 500
+
+
+@main.route('/api/foundational', methods=['GET'])
+def fetch_foundational():
+    try:
+        foundational_data=get_foundational_data()
+        return jsonify(foundational_data)
+    except Exception as e:
         return jsonify({'error': 'An internal server error occurred'}), 500

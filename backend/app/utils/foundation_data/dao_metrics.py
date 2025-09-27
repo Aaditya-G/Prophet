@@ -1,8 +1,8 @@
 import json
 from typing import Dict, Any, List
 from datetime import datetime
-from .tvl import llama_tvl_analyzer
-from .governance_subgraph import subgraph_service
+from .tvl_slope import llama_tvl_analyzer
+from .voting_power import subgraph_service
 from .top_delegate import dune_analytics_service
 from .treasury import treasury_analytics_service
 
@@ -43,8 +43,7 @@ class DaoMetricsUtil:
             },
             "tvl": {
                 "average_weekly_slope": tvl_slopes.get("average_weekly_slope_usd_per_day") if "error" not in tvl_slopes else tvl_slopes,
-            },
-            "last_updated": last_updated_str
+            }
         }
 
         return results
