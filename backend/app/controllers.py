@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from .services import get_all_proposals, get_proposal_details
+from .services import get_all_proposals, get_proposal_details , get_foundational_data
 
 main = Blueprint('main', __name__)
 
@@ -22,4 +22,13 @@ def fetch_proposal(proposal_id):
     except Exception:
         import traceback
         traceback.print_exc()
+        return jsonify({'error': 'An internal server error occurred'}), 500
+
+
+@main.route('/api/dao-metrics', methods=['GET'])
+def fetch_foundational():
+    try:
+        foundational_data=get_foundational_data()
+        return jsonify(foundational_data)
+    except Exception as e:
         return jsonify({'error': 'An internal server error occurred'}), 500
