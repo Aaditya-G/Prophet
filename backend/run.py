@@ -1,6 +1,6 @@
 import os
 import sys
-from app import app
+from Prophet.backend.app import app
 
 if __name__ == '__main__':
     # Get configuration from environment
