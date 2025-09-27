@@ -5,7 +5,7 @@ from typing import List, Dict, Optional, Any
 from datetime import datetime
 
 
-load_dotenv('config.env')
+load_dotenv('.env')
 
 class SubgraphService:
     """

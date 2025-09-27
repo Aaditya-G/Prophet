@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from typing import Dict, Any, List, Optional
 
 
-load_dotenv('config.env')
+load_dotenv('.env')
 
 class DuneAnalyticsService:
     """

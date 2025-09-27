@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from typing import Dict, Any, List, Optional, Tuple
 
 
-load_dotenv('config.env')
+load_dotenv('.env')
 
 class TreasuryAnalyticsService:
     """
