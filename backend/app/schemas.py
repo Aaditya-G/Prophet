@@ -7,6 +7,7 @@ def to_camel(snake_str: str) -> str:
 
 class CamelCaseModel(BaseModel):
     class Config:
+        from_attributes = True
         orm_mode = True
         alias_generator = to_camel
         allow_population_by_field_name = True
@@ -24,22 +25,22 @@ class VoterSchema(CamelCaseModel):
 
 class ProposerSchema(CamelCaseModel):
     id: str
-    delegated_votes_raw: int
-    number_votes: int
-    token_holders_represented_amount: int
+    delegated_votes_raw: Optional[int] = None
+    number_votes: Optional[int] = None
+    token_holders_represented_amount: Optional[int] = None
 
 class ProposalSchema(CamelCaseModel):
     id: str
     description: Optional[str]
     proposer: ProposerSchema
     state: str
-    creation_time: int
+    creation_time: Optional[int] = None
     votes: List[VoteSchema] = []
-    abstain_delegate_votes: int
-    against_delegate_votes: int
-    for_delegate_votes: int
-    quorum_votes: int
-    total_delegate_votes: int
+    abstain_delegate_votes: Optional[int] = None
+    against_delegate_votes: Optional[int] = None
+    for_delegate_votes: Optional[int] = None
+    quorum_votes: Optional[int] = None
+    total_delegate_votes: Optional[int] = None
 
 class OffChainPostSchema(CamelCaseModel):
     cooked: Optional[str]
