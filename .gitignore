@@ -7,3 +7,5 @@ uniswap-governance/src/pb/
 uniswap-governance/target/
 Cargo.lock
 replay.log
+
+venv/
