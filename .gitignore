@@ -2,9 +2,9 @@
 
 # uniswap governance substream sql sink related files
 .substreams.env
-uniswap-governance/src/abi/
-uniswap-governance/src/pb/
-uniswap-governance/target/
+uniswap-governance-sink/src/abi/
+uniswap-governance-sink/src/pb/
+uniswap-governance-sink/target/
 Cargo.lock
 replay.log
 

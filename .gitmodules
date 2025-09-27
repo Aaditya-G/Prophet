@@ -1,0 +1,3 @@
+[submodule "substreams/uniswap-governance"]
+	path = substreams/uniswap-governance
+	url = https://github.com/Aaditya-G/uniswap-governance-substream
