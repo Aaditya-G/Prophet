@@ -1,0 +1,51 @@
+type Proposal @entity {
+  id: ID!
+  description: String
+  proposer: Proposer!
+  state: String!
+  creationTime: BigInt!
+  votes: [Vote!] @derivedFrom(field: "proposal")
+  abstainDelegateVotes: BigInt!
+  abstainWeightedVotes: BigInt!
+  againstDelegateVotes: BigInt!
+  againstWeightedVotes: BigInt!
+  forDelegateVotes: BigInt!
+  forWeightedVotes: BigInt!
+  quorumVotes: BigInt!
+  totalDelegateVotes: BigInt!
+  totalWeightedVotes: BigInt!
+  values: [String!]
+  governanceFramework: GovernanceFramework!
+  delegatesAtStart: BigInt!
+}
+
+type Proposer @entity {
+  id: ID!
+  delegatedVotesRaw: BigInt!
+  delegatedVotes: String!
+  tokenHoldersRepresentedAmount: Int!
+  numberVotes: Int!
+  proposals: [Proposal!] @derivedFrom(field: "proposer")
+}
+
+type Vote @entity {
+  id: ID!
+  voter: Voter!
+  proposal: Proposal!
+  weight: BigInt!
+  choice: String!
+  reason: String
+}
+
+type Voter @entity {
+  id: ID!
+  delegatedVotesRaw: BigInt!
+  delegatedVotes: String!
+  votes: [Vote!] @derivedFrom(field: "voter")
+}
+
+type GovernanceFramework @entity {
+    id: ID!
+    quorumVotes: BigInt!
+    votingPeriod: BigInt!
+}
