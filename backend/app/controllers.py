@@ -9,6 +9,8 @@ def fetch_proposals():
         proposals_data = get_all_proposals()
         return jsonify(proposals_data)
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': 'An internal server error occurred'}), 500
 
 @main.route('/api/proposals/<string:proposal_id>', methods=['GET'])

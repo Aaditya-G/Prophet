@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/* Custom styles */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #10002b;
+  overflow-x: hidden;
+}
+
+html, #root {
+  background-color: #10002b;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+/* Themed scrollbars */
+html, body, #root {
+  /* Firefox */
+  scrollbar-color: #c77dff #10002b;
+  scrollbar-width: thin;
+}
+
+/* WebKit-based browsers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #10002b;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #c77dff;
+  border-radius: 9999px;
+  border: 2px solid #10002b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9d4edd; /* slightly darker purple on hover */
+}
+
+/* AI Analysis Animations */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes morphScale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Smooth transitions for layout changes */
+.layout-transition {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced button hover effects */
+.ai-analysis-button {
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-analysis-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.ai-analysis-button:hover::before {
+  left: 100%;
+}
+
+.ai-analysis-button:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+}
+
+/* Enhanced morphing transitions */
+.morph-container {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.morph-container.morphing {
+  animation: morphScale 0.6s ease-in-out;
+}
+
+/* Smooth grid transitions */
+.grid-transition {
+  transition: grid-template-columns 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced proposal card animations */
+.proposal-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.proposal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(199, 125, 255, 0.1);
+}
+
+/* AI Analysis panel entrance animation */
+.ai-panel-enter {
+  animation: slideInFromRight 0.6s ease-out;
+}
+
+.ai-panel-exit {
+  animation: slideOutToRight 0.4s ease-in;
+}
+
+/* Dropdown/Select styling fixes */
+select {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(199, 125, 255, 0.2) !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+select option {
+  background-color: #10002b !important;
+  color: white !important;
+  padding: 8px 12px !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-sizing: border-box !important;
+}
+
+select option:hover {
+  background-color: rgba(199, 125, 255, 0.2) !important;
+  color: #c77dff !important;
+}
+
+select option:checked {
+  background-color: rgba(199, 125, 255, 0.3) !important;
+  color: #c77dff !important;
+}
+
+/* Focus state for better accessibility */
+select:focus {
+  outline: none !important;
+  border-color: #c77dff !important;
+  box-shadow: 0 0 0 2px rgba(199, 125, 255, 0.2) !important;
+}
