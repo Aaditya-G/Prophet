@@ -4,6 +4,7 @@ import asyncio
 import httpx
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 load_dotenv()
 
@@ -14,6 +15,7 @@ SERVER_PORT = 5001
 
 
 app = Flask(__name__)
+CORS(app , resources={r"/api/*": {"origins": "*"}})
 
 @app.route("/analyze_proposal", methods=["POST"])
 async def analyze_proposal_endpoint():
