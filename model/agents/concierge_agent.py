@@ -115,7 +115,7 @@ async def _start_workflow(ctx: Context, proposal_data_json: str, constitution: s
     
     return workflow_id
 
-@agent.on_rest_post("/analyze", HttpAnalysisRequest, HttpAnalysisResponse)
+@agent.on_rest_post("analyze", HttpAnalysisRequest, HttpAnalysisResponse)
 async def handle_http_request(ctx: Context, request: HttpAnalysisRequest) -> HttpAnalysisResponse:
     """Handle HTTP POST requests from client_cli.py"""
     ctx.logger.info("HTTP POST request received at /analyze")

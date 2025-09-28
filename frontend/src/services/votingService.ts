@@ -199,7 +199,7 @@ class VotingService {
 
   async castVote(
     proposalId: string, 
-    support: VoteSupport, 
+    support: number, 
     reason?: string
   ): Promise<VoteResult> {
     if (!this.contract || !this.signer) {
@@ -214,7 +214,7 @@ class VotingService {
       // Check if proposal is active
       const state = await this.checkProposalState(proposalId);
       if (state !== PROPOSAL_STATE.ACTIVE) {
-        const stateMessages = {
+        const stateMessages : Record<number, string> = {
           [PROPOSAL_STATE.PENDING]: 'Proposal is pending',
           [PROPOSAL_STATE.CANCELED]: 'Proposal has been canceled',
           [PROPOSAL_STATE.DEFEATED]: 'Proposal has been defeated',
@@ -332,7 +332,7 @@ class VotingService {
     try {
       const receipt = await this.provider.waitForTransaction(txHash);
       
-      if (receipt.status === 1) {
+      if (receipt?.status === 1) {
         return {
           success: true,
           txHash,

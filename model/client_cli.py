@@ -15,7 +15,7 @@ SERVER_PORT = 5001
 
 
 app = Flask(__name__)
-CORS(app , resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 
 @app.route("/analyze_proposal", methods=["POST"])
 async def analyze_proposal_endpoint():

@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
-import { useWallet } from '../../hooks/useWallet'
 import { useProposals } from '../../hooks/useProposals'
 import { StaggeredMenu } from '../../components/StaggeredMenu'
 import Silk from '../../components/Silk'
@@ -8,8 +7,9 @@ import type { StaggeredMenuItem, StaggeredMenuSocialItem } from '../../component
 import { ActiveProposals } from './components/ActiveProposals'
 import { AllProposals } from './components/AllProposals'
 import { AIAnalysis } from './components/AIAnalysis'
-import type { BackendProposal } from './types'
-import type { AIAnalysisData } from '../../services/api'
+import { analysisAPI } from '../../services/analysisApi'
+import type { Proposal } from '../../services/api' // Use the main Proposal type
+import type { AnalysisResult } from '../../services/analysisApi'
 
 interface ProposalsPageProps {
   onSectionChange?: (section: string) => void
@@ -17,20 +17,22 @@ interface ProposalsPageProps {
 
 export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
   const proposalsRef = useRef<HTMLDivElement>(null)
-  const { address, formatAddress, disconnectWallet } = useWallet()
-  const { refreshData } = useProposals(10)
+  const { allProposals, activeProposal, loading, isError } = useProposals()
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedProposal, setSelectedProposal] = useState<BackendProposal | null>(null)
-  const [selectedAIAnalysis, setSelectedAIAnalysis] = useState<AIAnalysisData | undefined>(undefined)
+  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null) // Changed to Proposal type
+  
+  const [constitution, setConstitution] = useState('Be fair and unbiased.')
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
+  
   const [isAnalysisMode, setIsAnalysisMode] = useState(false)
 
-  // Menu items for StaggeredMenu
   const menuItems: StaggeredMenuItem[] = [
-    { label: 'Home', ariaLabel: 'Go to Home page', link: '#home', onClick: () => { console.log('Home clicked'); onSectionChange?.('home') } },
-    { label: 'Proposals', ariaLabel: 'View all Proposals', link: '#proposals', onClick: () => { console.log('Proposals clicked'); onSectionChange?.('proposals') } },
-    { label: 'FAQ', ariaLabel: 'View FAQ', link: '#faq', onClick: () => { console.log('FAQ clicked'); onSectionChange?.('faq') } },
-    { label: 'Markets', ariaLabel: 'View Markets', link: '#markets', onClick: () => { console.log('Markets clicked'); onSectionChange?.('markets') } },
-    { label: 'Profile', ariaLabel: 'View Profile', link: '#profile', onClick: () => { console.log('Profile clicked'); onSectionChange?.('profile') } }
+    { label: 'Home', ariaLabel: 'Go to Home page', link: '#home', onClick: () => { onSectionChange?.('home') } },
+    { label: 'Proposals', ariaLabel: 'View all Proposals', link: '#proposals', onClick: () => { onSectionChange?.('proposals') } },
+    { label: 'FAQ', ariaLabel: 'View FAQ', link: '#faq', onClick: () => { onSectionChange?.('faq') } },
+    { label: 'Markets', ariaLabel: 'View Markets', link: '#markets', onClick: () => { onSectionChange?.('markets') } },
+    { label: 'Profile', ariaLabel: 'View Profile', link: '#profile', onClick: () => { onSectionChange?.('profile') } }
   ]
 
   const socialItems: StaggeredMenuSocialItem[] = [
@@ -39,36 +41,22 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
     { label: 'GitHub', link: 'https://github.com' }
   ]
 
-  const handleShowAIAnalysis = (proposal: BackendProposal, aiAnalysis?: AIAnalysisData) => {
+  const handleShowAIAnalysis = (proposal: Proposal) => { // Changed to Proposal type
     setSelectedProposal(proposal)
-    setSelectedAIAnalysis(aiAnalysis)
+    setAnalysisResult(null)
     
-    // Create morphing animation timeline
     const tl = gsap.timeline()
-    
-    // Animate the main container to prepare for split layout
     tl.to(proposalsRef.current, {
       duration: 0.3,
       ease: "power2.out",
       scale: 0.98,
-      onComplete: () => {
-        setIsAnalysisMode(true)
-      }
+      onComplete: () => setIsAnalysisMode(true)
     })
-    
-    // Animate back to normal scale after layout change
-    tl.to(proposalsRef.current, {
-      duration: 0.3,
-      ease: "power2.out",
-      scale: 1
-    })
+    tl.to(proposalsRef.current, { duration: 0.3, ease: "power2.out", scale: 1 })
   }
 
   const handleCloseAnalysis = () => {
-    // Create closing animation timeline
     const tl = gsap.timeline()
-    
-    // Animate the main container
     tl.to(proposalsRef.current, {
       duration: 0.3,
       ease: "power2.out",
@@ -76,25 +64,29 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
       onComplete: () => {
         setIsAnalysisMode(false)
         setSelectedProposal(null)
-        setSelectedAIAnalysis(undefined)
+        setAnalysisResult(null)
       }
     })
-    
-    // Animate back to normal scale
-    tl.to(proposalsRef.current, {
-      duration: 0.3,
-      ease: "power2.out",
-      scale: 1
-    })
+    tl.to(proposalsRef.current, { duration: 0.3, ease: "power2.out", scale: 1 })
   }
-
-  const handleRefreshAIAnalysis = async () => {
+  
+  const handleTriggerAnalysis = async () => {
+    if (!selectedProposal) return;
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
     try {
-      await refreshData()
+      const result = await analysisAPI.analyzeProposal({
+        proposal_id: selectedProposal.id,
+        constitution: constitution,
+      });
+      setAnalysisResult(result);
     } catch (error) {
-      console.error('Failed to refresh AI analysis:', error)
+      console.error('Failed to get AI analysis:', error);
+      setAnalysisResult({ error: (error as Error).message });
+    } finally {
+      setIsAnalyzing(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (proposalsRef.current) {
@@ -107,8 +99,6 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
 
   return (
     <div ref={proposalsRef} className="min-h-screen relative overflow-x-hidden morph-container" style={{ backgroundColor: '#10002b' }}>
-
-      {/* Soft glow background accents (purple theme) */
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <Silk
           speed={1.8}
@@ -140,9 +130,7 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
           }}
         />
       </div>
-
-        }{/* StaggeredMenu */}
-      <StaggeredMenu
+       <StaggeredMenu
         position="left"
         colors={['#10002b', '#c77dff']}
         items={menuItems}
@@ -154,12 +142,10 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
         accentColor="#c77dff"
         changeMenuColorOnOpen={false}
       />
-
-      {/* Main Content */}
+      
       <div className="px-6 py-4 relative z-20">
         <div className="flex items-center justify-end mb-6">
           <div className="flex items-center space-x-4">
-            {/* Search Bar */}
             <div className="relative">
               <input
                 type="text"
@@ -176,45 +162,11 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-
-            {/* Wallet Address */}
-            {address && (
-              <div className="flex items-center space-x-3">
-                <div className="px-3 py-1 rounded-full text-sm font-semibold" style={{ backgroundColor: '#c77dff', color: '#10002b' }}>
-                  {formatAddress(address)}
-                </div>
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              </div>
-            )}
-            
-            {/* Disconnect Button */}
-            <button
-              onClick={disconnectWallet}
-              className="px-4 py-2 rounded-xl font-semibold transition-colors duration-200"
-              style={{ backgroundColor: '#ef4444', color: 'white' }}
-            >
-              Disconnect
-            </button>
-            
-            {/* Refresh Data Button */}
-            <button
-              onClick={handleRefreshAIAnalysis}
-              className="px-4 py-2 rounded-xl font-semibold transition-colors duration-200 flex items-center space-x-2"
-              style={{ backgroundColor: '#c77dff', color: '#10002b' }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>Refresh</span>
-            </button>
           </div>
         </div>
 
-        {/* Main Content */}
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
-            
-            {/* Page Header */}
             <div className="mb-8">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-[#c77dff]" style={{ border: '1px solid rgba(199, 125, 255, 0.5)', backgroundColor: 'transparent' }}>
@@ -229,50 +181,41 @@ export const ProposalsPage = ({ onSectionChange }: ProposalsPageProps) => {
                 View and manage all subgraph proposals. Track active voting and review historical decisions.
               </p>
             </div>
-
-            {/* Split Layout Container */}
-            <div 
-              className={`grid-transition ${
-                isAnalysisMode 
-                  ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' 
-                  : 'block'
-              }`}
-            >
-              
-              {/* Left Side - Active Proposals */}
-              <div 
-                className={`transition-all duration-600 ease-in-out ${
-                  isAnalysisMode ? 'lg:col-span-1' : 'w-full'
-                }`}
-                style={{
-                  transform: isAnalysisMode ? 'translateX(0)' : 'translateX(0)',
-                  opacity: 1
-                }}
-              >
+            
+            <div className={`grid-transition ${isAnalysisMode ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : 'block'}`}>
+              <div className={`transition-all duration-600 ease-in-out ${isAnalysisMode ? 'lg:col-span-1' : 'w-full'}`} style={{ transform: 'translateX(0)', opacity: 1 }}>
                 <div className="mb-8">
                   <ActiveProposals 
                     searchTerm={searchTerm} 
                     onShowAIAnalysis={handleShowAIAnalysis}
                     isAnalysisMode={isAnalysisMode}
+                    activeProposal={activeProposal}
+                    loading={loading}
+                    isError={isError}
                   />
                 </div>
-
-                {/* All Proposals Section - Only show when not in analysis mode */}
                 {!isAnalysisMode && (
                   <div>
-                    <AllProposals searchTerm={searchTerm} />
+                    <AllProposals 
+                      searchTerm={searchTerm} 
+                      allProposals={allProposals}
+                      loading={loading}
+                      isError={isError}
+                    />
                   </div>
                 )}
               </div>
 
-              {/* Right Side - AI Analysis */}
               {isAnalysisMode && selectedProposal && (
                 <div className="lg:col-span-1 ai-panel-enter">
                   <AIAnalysis 
                     proposal={selectedProposal} 
-                    aiAnalysis={selectedAIAnalysis}
                     onClose={handleCloseAnalysis}
-                    onRefresh={handleRefreshAIAnalysis}
+                    constitution={constitution}
+                    onConstitutionChange={setConstitution}
+                    onAnalyze={handleTriggerAnalysis}
+                    isAnalyzing={isAnalyzing}
+                    analysisResult={analysisResult}
                   />
                 </div>
               )}

@@ -12,7 +12,7 @@ interface VotingModalProps {
   onClose: () => void;
   proposalId: string;
   proposalTitle: string;
-  voteType: VoteSupport;
+  voteType: number;
   onVoteSuccess?: (txHash: string) => void;
 }
 
@@ -30,22 +30,22 @@ export const VotingModal: React.FC<VotingModalProps> = ({
   const [txStatus, setTxStatus] = useState<'pending' | 'confirming' | 'confirmed' | 'failed'>('pending');
   const modalRef = React.useRef<HTMLDivElement>(null);
 
-  const voteTypeLabels = {
-    [VOTE_SUPPORT.AGAINST]: 'Against',
-    [VOTE_SUPPORT.FOR]: 'For',
-    [VOTE_SUPPORT.ABSTAIN]: 'Abstain'
+  const voteTypeLabels : Record<number, string>  = {
+    0: 'Against',
+    1: 'For',
+    2: 'Abstain'
   };
 
-  const voteTypeColors = {
-    [VOTE_SUPPORT.AGAINST]: 'text-red-400',
-    [VOTE_SUPPORT.FOR]: 'text-green-400',
-    [VOTE_SUPPORT.ABSTAIN]: 'text-gray-400'
+  const voteTypeColors : Record<number, string>  = {
+    0: 'text-red-400',
+    1: 'text-green-400',
+    2: 'text-gray-400'
   };
 
-  const voteTypeBgColors = {
-    [VOTE_SUPPORT.AGAINST]: 'bg-red-500',
-    [VOTE_SUPPORT.FOR]: 'bg-green-500',
-    [VOTE_SUPPORT.ABSTAIN]: 'bg-gray-500'
+  const voteTypeBgColors: Record<number, string> = {
+    0: 'bg-red-500',
+    1: 'bg-green-500',
+    2: 'bg-gray-500'
   };
 
   // Animation effects, scroll prevention, and keyboard support
