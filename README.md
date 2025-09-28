@@ -118,6 +118,15 @@ sequenceDiagram
     CO->>H: Log Final Result
     CO->>C: Complete Analysis
 ```
+<img width="1269" height="1740" alt="diagram-export-28-9-2025-8_21_18-am" src="https://github.com/user-attachments/assets/2a8abe17-4de8-4c0c-9fec-14f30388bbe4" />
+
+This multi-agent system built using the Fetch.ai uagents framework analyzes DAO governance proposals. It demonstrates how specialized, autonomous agents can collaborate to perform a complex task that requires context, analysis, and strategic decision-making. The system is designed to be transparent and auditable by logging key interactions to the Hedera Consensus Service.
+
+The workflow begins when a user submits a proposal to analyze. A central ConciergeAgent receives the request and orchestrates the process. It first tasks an ArchivistAgent with retrieving relevant historical proposals from a local ChromaDB vector store. This context is then passed, along with the original proposal, to an AnalystAgent which uses Google's Gemini AI to produce a neutral summary and identify potential risks.
+
+Finally, the StrategistAgent receives this neutral analysis and a user-defined "constitution" (a set of voting principles). It uses the Gemini AI to weigh the analysis against these principles and generates a final recommendation of FOR, AGAINST, or ABSTAIN. The entire process is tracked by the Concierge, which logs cryptographic hashes of the data exchanged between agents to Hedera, creating a verifiable, immutable audit trail of the workflow. The final, comprehensive result is then returned to the user.
+
+
 
 ## Data Pipeline Architecture
 
