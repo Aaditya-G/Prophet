@@ -36,10 +36,10 @@ async def analyze_proposal_endpoint():
             print(f"Fetching data for proposal {proposal_id} and DAO-wide metrics...")
 
             proposal_details_url = f"{DAO_API_BASE_URL}/proposals/{proposal_id}"
-            specific_proposal_task = client.get(proposal_details_url, timeout=30.0)     #onchain and offchain data
+            specific_proposal_task = client.get(proposal_details_url, timeout=60.0)     #onchain and offchain data
 
 
-            dao_metrics = client.get(DAO_INFO_ENDPOINT, timeout=30.0)
+            dao_metrics = client.get(DAO_INFO_ENDPOINT, timeout=60.0)
 
 
             responses = await asyncio.gather(specific_proposal_task, dao_metrics, return_exceptions=True)
